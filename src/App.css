@@ -1,8 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
@@ -39,4 +38,28 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Layout for app body to accommodate fixed sidebar */
+.app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-body {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  padding: 1.5rem;
+  margin-top: 50px;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
 }

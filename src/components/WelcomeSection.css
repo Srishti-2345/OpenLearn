@@ -1,0 +1,71 @@
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(181, 55, 242, 0.15) 100%);
+  border: 2px solid #00d9ff;
+  border-radius: 16px;
+  color: #00ffff;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.3), inset 0 0 20px rgba(181, 55, 242, 0.1);
+}
+
+.welcome-content h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  color: #00ffff;
+  text-shadow: 0 0 20px rgba(0, 217, 255, 0.6);
+}
+
+.welcome-content p {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.9;
+  color: #00d9ff;
+}
+
+.streak-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(181, 55, 242, 0.2) 0%, rgba(0, 217, 255, 0.2) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid #b537f2;
+  box-shadow: 0 0 20px rgba(181, 55, 242, 0.4);
+}
+
+.streak-icon {
+  font-size: 2.5rem;
+}
+
+.streak-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff006e;
+  text-shadow: 0 0 15px rgba(255, 0, 110, 0.5);
+}
+
+.streak-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  color: #00d9ff;
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .welcome-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-content p {
+    font-size: 1rem;
+  }
+}
