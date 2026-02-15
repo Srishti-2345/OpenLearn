@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neonPink: #ff00ff;
+  --color-neonBlue: #00f0ff;
+  --color-cyberDark: #07070a;
+}
+/* neon glow text */
+.neon-text {
+  color: var(--color-neonBlue);
+  text-shadow:
+    0 0 5px var(--color-neonBlue),
+    0 0 10px var(--color-neonBlue),
+    0 0 20px var(--color-neonPink),
+    0 0 40px var(--color-neonPink);
+}
+
+/* glitch effect */
+.glitch {
+  position: relative;
+  color: white;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* pink layer */
+.glitch::before {
+  color: var(--color-neonPink);
+  opacity: 0.8;
+  animation: glitchTop 1s infinite linear alternate-reverse;
+}
+
+/* blue layer */
+.glitch::after {
+  color: var(--color-neonBlue);
+  opacity: 0.8;
+  animation: glitchBottom 1.2s infinite linear alternate-reverse;
+}
+
+/* ✨ smaller movement so it stays aligned */
+@keyframes glitchTop {
+  0% { transform: translate(1.5px, -1.5px); }
+  100% { transform: translate(-1.5px, 1.5px); }
+}
+
+@keyframes glitchBottom {
+  0% { transform: translate(-1.5px, 1.5px); }
+  100% { transform: translate(1.5px, -1.5px); }
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
