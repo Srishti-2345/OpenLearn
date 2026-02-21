@@ -30,6 +30,7 @@ function App() {
           onClose={() => setDetailsOpen(false)}
         />
       </main>
+
     </>
   )
 }

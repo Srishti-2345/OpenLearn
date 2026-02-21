@@ -1,0 +1,92 @@
+.certificates-section {
+  margin-bottom: 2rem;
+}
+
+.certificates-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.certificate-card {
+  background: linear-gradient(135deg, rgba(15, 20, 49, 0.8) 0%, rgba(26, 31, 58, 0.8) 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 2px solid #39ff14;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+  transition: all 0.3s;
+}
+
+.certificate-card:hover {
+  transform: translateX(6px);
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.5), 0 0 15px rgba(0, 217, 255, 0.3);
+  border-color: #00d9ff;
+}
+
+.certificate-icon {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #39ff14, #00d9ff);
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+}
+
+.certificate-info {
+  flex: 1;
+}
+
+.certificate-course {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00ffff;
+  margin: 0 0 0.25rem 0;
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.certificate-date {
+  font-size: 0.9rem;
+  color: #00d9ff;
+  margin: 0.25rem 0;
+}
+
+.certificate-id {
+  font-size: 0.85rem;
+  color: #39ff14;
+  margin: 0.25rem 0 0 0;
+}
+
+.download-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #39ff14, #00d9ff);
+  color: #0a0e27;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+}
+
+.download-button:hover {
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.8), 0 0 15px rgba(0, 217, 255, 0.5);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .certificate-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+}
