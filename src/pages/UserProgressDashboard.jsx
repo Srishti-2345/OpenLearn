@@ -1,4 +1,17 @@
 import React from "react";
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 export default function UserProgressDashboard({ enrolledCourses = [], onOpenCourses = () => {} }) {
   const [showAllAchievements, setShowAllAchievements] = React.useState(false);
@@ -58,17 +71,74 @@ export default function UserProgressDashboard({ enrolledCourses = [], onOpenCour
   const visibleCourses = showAllCourses ? normalizedCourses : normalizedCourses.slice(0, 3);
   const visibleLeaderboard = showFullLeaderboard ? leaderboard : leaderboard.slice(0, 2);
   const canExpandCourses = normalizedCourses.length > 3;
-  const monthlySolved = Array.from({ length: 30 }, (_, index) => {
-    const base = Math.floor((Math.sin(index / 4) + 1.2) * 2);
-    const streakBoost = index % 7 === 0 ? 2 : 0;
-    return base + streakBoost + Math.min(inProgressCourses.length, 3);
+  const monthlySolvedData = [
+    { month: "Jan", solved: 14 },
+    { month: "Feb", solved: 19 },
+    { month: "Mar", solved: 23 },
+    { month: "Apr", solved: 17 },
+    { month: "May", solved: 26 },
+    { month: "Jun", solved: 21 },
+    { month: "Jul", solved: 29 },
+    { month: "Aug", solved: 24 },
+    { month: "Sep", solved: 31 },
+    { month: "Oct", solved: 27 },
+    { month: "Nov", solved: 34 },
+    { month: "Dec", solved: 30 },
+  ];
+  const monthLabels = monthlySolvedData.map((item) => item.month);
+  const monthlySolved = monthlySolvedData.map((item) => item.solved);
+  const maxSolvedInMonth = Math.max(...monthlySolved, 1);
+  const lineChartData = {
+    labels: monthLabels,
+    datasets: [
+      {
+        label: "Problems solved",
+        data: monthlySolved,
+        borderColor: "#2ceb9a",
+        backgroundColor: "rgba(46, 237, 154, 0.2)",
+        tension: 0.35,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 5,
+        pointBackgroundColor: "#2ceb9a",
+        pointBorderColor: "#042218",
+        pointBorderWidth: 1.5,
+      },
+    ],
+  };
+  const lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context) => `${context.label}: ${context.parsed.y} solved`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#aee7cc", font: { size: 10 } },
+        grid: { color: "rgba(46, 237, 156, 0.12)" },
+      },
+      y: {
+        beginAtZero: true,
+        suggestedMax: maxSolvedInMonth + 4,
+        ticks: { color: "#aee7cc", stepSize: 5 },
+        grid: { color: "rgba(46, 237, 156, 0.12)" },
+      },
+    },
+  };
+  const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const monthlyHeatmap = monthLabels.map((month, monthIndex) => {
+    const days = daysInMonths[monthIndex];
+    return {
+      month,
+      days,
+      values: Array.from({ length: days }, (_, day) => (monthIndex * 5 + day + completedCourses.length) % 5),
+    };
   });
-  const maxSolvedInDay = Math.max(...monthlySolved, 1);
-  const heatmapWeeks = 12;
-  const heatmapDays = 7;
-  const heatmapValues = Array.from({ length: heatmapWeeks }, (_, week) =>
-    Array.from({ length: heatmapDays }, (_, day) => (week * 3 + day + completedCourses.length) % 5)
-  );
   const heatmapColors = [
     "bg-[#123728]",
     "bg-[#1a5a3f]",
@@ -94,38 +164,40 @@ export default function UserProgressDashboard({ enrolledCourses = [], onOpenCour
         </div>
 
         <div className="mt-4 rounded-xl border border-[#2ced9c]/20 bg-[#0b2f27] p-4">
-          <h4 className="text-xl font-bold">Problems Solved (Last 30 Days)</h4>
-          <div className="mt-4 flex h-40 items-end gap-1 rounded-lg border border-[#2ced9c]/10 bg-[#06271f] p-3">
-            {monthlySolved.map((count, index) => (
-              <div key={`day-${index}`} className="flex flex-1 flex-col items-center justify-end">
-                <div
-                  className="w-full rounded-t bg-[#2ceb9a]"
-                  style={{ height: `${Math.max(6, (count / maxSolvedInDay) * 100)}%` }}
-                  title={`Day ${index + 1}: ${count} solved`}
-                />
-              </div>
-            ))}
+          <h4 className="text-xl font-bold">Problems Solved (Monthly)</h4>
+          <div className="mt-4 rounded-lg border border-[#2ced9c]/10 bg-[#06271f] p-3">
+            <div className="h-44 w-full">
+              <Line data={lineChartData} options={lineChartOptions} />
+            </div>
           </div>
           <p className="mt-2 text-xs text-[#aee7cc]">
-            Total solved this month: <span className="font-semibold text-[#53f7a8]">{monthlySolved.reduce((a, b) => a + b, 0)}</span>
+            Total solved this year: <span className="font-semibold text-[#53f7a8]">{monthlySolved.reduce((a, b) => a + b, 0)}</span>
           </p>
         </div>
 
         <div className="mt-5 rounded-xl border border-[#2ced9c]/20 bg-[#0b2f27] p-4">
           <h4 className="text-xl font-bold">Submission Heatmap</h4>
-          <p className="mt-1 text-xs text-[#aee7cc]">LeetCode-style contribution intensity by day.</p>
+          <p className="mt-1 text-xs text-[#aee7cc]">Monthly contribution intensity by day.</p>
           <div className="mt-4 overflow-x-auto">
-            <div className="inline-grid grid-flow-col gap-1">
-              {heatmapValues.map((week, weekIndex) => (
-                <div key={`week-${weekIndex}`} className="grid grid-rows-7 gap-1">
-                  {week.map((value, dayIndex) => (
-                    <div
-                      key={`cell-${weekIndex}-${dayIndex}`}
-                      className={`h-3 w-3 rounded-sm ${heatmapColors[value]}`}
-                      title={`Week ${weekIndex + 1}, Day ${dayIndex + 1}: ${value} submissions`}
-                    />
-                  ))}
-                </div>
+            <div className="inline-flex items-start rounded-lg border border-[#2ced9c]/10 bg-[#06271f] p-3">
+              {monthlyHeatmap.map((monthData, monthIndex) => (
+                <React.Fragment key={`month-heatmap-${monthData.month}`}>
+                  <div className="flex flex-col items-center">
+                    <p className="mb-2 text-[10px] font-semibold tracking-[0.15em] text-[#74fcb8]">{monthData.month}</p>
+                    <div className="grid grid-flow-col grid-rows-7 gap-1">
+                      {monthData.values.map((value, dayIndex) => (
+                        <div
+                          key={`cell-${monthData.month}-${dayIndex + 1}`}
+                          className={`h-3 w-3 rounded-sm ${heatmapColors[value]}`}
+                          title={`${monthData.month} ${dayIndex + 1}: ${value} submissions`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  {monthIndex < monthlyHeatmap.length - 1 && (
+                    <div className="mx-2 mt-6 h-[84px] w-px bg-[#2ced9c]/25" />
+                  )}
+                </React.Fragment>
               ))}
             </div>
           </div>
