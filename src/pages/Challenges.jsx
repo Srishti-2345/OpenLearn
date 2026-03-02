@@ -1,18 +1,22 @@
 import { useMemo, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { Lock, Play, Rocket } from "lucide-react";
+import { Lock, PanelLeft, Play, Rocket, X } from "lucide-react";
 
-const visibleTests = [
-  { id: 1, nums: [2, 7, 11, 15], target: 9, output: [0, 1] },
-  { id: 2, nums: [3, 2, 4], target: 6, output: [1, 2] },
-];
-
-const hiddenTests = [
-  { nums: [3, 3], target: 6, output: [0, 1] },
-  { nums: [1, 5, 8, 10], target: 13, output: [1, 2] },
-];
-
-const starterCode = `function twoSum(nums, target) {
+const problems = [
+  {
+    id: 1,
+    title: "Two Sum",
+    difficulty: "Easy",
+    solved: true,
+    functionName: "twoSum",
+    description:
+      "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+    constraints: [
+      "2 <= nums.length <= 10^4",
+      "-10^9 <= nums[i] <= 10^9",
+      "-10^9 <= target <= 10^9",
+    ],
+    starterCode: `function twoSum(nums, target) {
   const seen = {};
 
   for (let i = 0; i < nums.length; i += 1) {
@@ -24,60 +28,118 @@ const starterCode = `function twoSum(nums, target) {
   }
 
   return [];
-}`;
+}`,
+    visibleTests: [
+      { id: 1, args: [[2, 7, 11, 15], 9], output: [0, 1] },
+      { id: 2, args: [[3, 2, 4], 6], output: [1, 2] },
+    ],
+    hiddenTests: [
+      { args: [[3, 3], 6], output: [0, 1] },
+      { args: [[1, 5, 8, 10], 13], output: [1, 2] },
+    ],
+  },
+  {
+    id: 2,
+    title: "Valid Parentheses",
+    difficulty: "Easy",
+    solved: false,
+    functionName: "isValid",
+    description:
+      "Given a string containing only ()[]{} characters, determine if the input string is valid.",
+    constraints: ["1 <= s.length <= 10^4", "s consists of parentheses only"],
+    starterCode: `function isValid(s) {
+  const stack = [];
+  const pairs = { ")": "(", "]": "[", "}": "{" };
 
-function normalizeArray(value) {
-  if (!Array.isArray(value)) {
-    return "__invalid__";
+  for (const ch of s) {
+    if (ch === "(" || ch === "[" || ch === "{") {
+      stack.push(ch);
+      continue;
+    }
+    if (stack.pop() !== pairs[ch]) {
+      return false;
+    }
   }
+
+  return stack.length === 0;
+}`,
+    visibleTests: [
+      { id: 1, args: ["()[]{}"], output: true },
+      { id: 2, args: ["(]"], output: false },
+    ],
+    hiddenTests: [
+      { args: ["([{}])"], output: true },
+      { args: ["((("], output: false },
+    ],
+  },
+  {
+    id: 3,
+    title: "Best Time to Buy and Sell Stock",
+    difficulty: "Easy",
+    solved: false,
+    functionName: "maxProfit",
+    description:
+      "Given an array prices where prices[i] is the price of a stock on the ith day, return the maximum profit.",
+    constraints: ["1 <= prices.length <= 10^5", "0 <= prices[i] <= 10^4"],
+    starterCode: `function maxProfit(prices) {
+  let minPrice = Infinity;
+  let best = 0;
+
+  for (const price of prices) {
+    minPrice = Math.min(minPrice, price);
+    best = Math.max(best, price - minPrice);
+  }
+
+  return best;
+}`,
+    visibleTests: [
+      { id: 1, args: [[7, 1, 5, 3, 6, 4]], output: 5 },
+      { id: 2, args: [[7, 6, 4, 3, 1]], output: 0 },
+    ],
+    hiddenTests: [{ args: [[2, 4, 1]], output: 2 }],
+  },
+];
+
+function normalize(value) {
   return JSON.stringify(value);
 }
 
-function formatArray(value) {
-  return Array.isArray(value) ? JSON.stringify(value) : String(value);
-}
-
-function buildRunner(code) {
+function buildRunner(code, functionName) {
   const factory = new Function(
     `${code}
-    if (typeof twoSum !== "function") {
-      throw new Error("Define a function named twoSum(nums, target).");
+    if (typeof ${functionName} !== "function") {
+      throw new Error("Define a function named ${functionName}.");
     }
-    return twoSum;`
+    return ${functionName};`
   );
   return factory();
 }
 
 export default function Challenges() {
-  const [code, setCode] = useState(starterCode);
+  const [selectedProblemIndex, setSelectedProblemIndex] = useState(0);
+  const [code, setCode] = useState(problems[0].starterCode);
   const [result, setResult] = useState(null);
+  const [showProblemList, setShowProblemList] = useState(false);
 
-  const challenge = useMemo(
-    () => ({
-      title: "Two Sum",
-      difficulty: "Easy",
-      description:
-        "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-      constraints: [
-        "2 <= nums.length <= 10^4",
-        "-10^9 <= nums[i] <= 10^9",
-        "-10^9 <= target <= 10^9",
-      ],
-    }),
-    []
-  );
+  const challenge = useMemo(() => problems[selectedProblemIndex], [selectedProblemIndex]);
+
+  const setActiveProblem = (index) => {
+    setSelectedProblemIndex(index);
+    setCode(problems[index].starterCode);
+    setResult(null);
+  };
 
   const runCode = () => {
     try {
-      const solver = buildRunner(code);
-      const test = visibleTests[0];
-      const output = solver([...test.nums], test.target);
-      const passed = normalizeArray(output) === normalizeArray(test.output);
+      const solver = buildRunner(code, challenge.functionName);
+      const test = challenge.visibleTests[0];
+      const output = solver(...test.args);
+      const passed = normalize(output) === normalize(test.output);
 
       setResult({
         status: passed ? "Accepted" : "Wrong Answer",
-        output: formatArray(output),
-        expected: formatArray(test.output),
+        output: normalize(output),
+        expected: normalize(test.output),
         mode: "Run",
       });
     } catch (error) {
@@ -92,24 +154,24 @@ export default function Challenges() {
 
   const submitCode = () => {
     try {
-      const solver = buildRunner(code);
+      const solver = buildRunner(code, challenge.functionName);
 
-      for (const test of visibleTests) {
-        const output = solver([...test.nums], test.target);
-        if (normalizeArray(output) !== normalizeArray(test.output)) {
+      for (const test of challenge.visibleTests) {
+        const output = solver(...test.args);
+        if (normalize(output) !== normalize(test.output)) {
           setResult({
             status: `Wrong Answer (Visible Test ${test.id} Failed)`,
-            output: formatArray(output),
-            expected: formatArray(test.output),
+            output: normalize(output),
+            expected: normalize(test.output),
             mode: "Submit",
           });
           return;
         }
       }
 
-      for (let i = 0; i < hiddenTests.length; i += 1) {
-        const output = solver([...hiddenTests[i].nums], hiddenTests[i].target);
-        if (normalizeArray(output) !== normalizeArray(hiddenTests[i].output)) {
+      for (let i = 0; i < challenge.hiddenTests.length; i += 1) {
+        const output = solver(...challenge.hiddenTests[i].args);
+        if (normalize(output) !== normalize(challenge.hiddenTests[i].output)) {
           setResult({
             status: `Wrong Answer (Hidden Test ${i + 1} Failed)`,
             output: "Hidden",
@@ -136,19 +198,81 @@ export default function Challenges() {
     }
   };
 
-  const formatInput = (nums, target) => `nums = ${JSON.stringify(nums)}, target = ${target}`;
-
-  const formatOutput = (value) => JSON.stringify(value);
-
   return (
     <section className="min-h-[calc(100vh-64px)] bg-[#031f1a] text-white p-4 md:p-6">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <button
+        className="mb-4 inline-flex items-center gap-2 rounded-lg border border-emerald-400/35 bg-emerald-500/10 px-3 py-2 text-sm hover:bg-emerald-500/20"
+        onClick={() => setShowProblemList(true)}
+      >
+        <PanelLeft size={16} />
+        Problems
+      </button>
+
+      {showProblemList && (
+        <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowProblemList(false)} />
+      )}
+
+      <aside
+        className={`fixed left-0 top-16 z-50 h-[calc(100vh-64px)] w-[300px] transform border-r border-emerald-500/25 bg-[#062f27] p-4 transition-transform duration-300 ${
+          showProblemList ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="mb-3 text-lg font-bold text-emerald-300">Problem List</h2>
+          <button
+            className="rounded-md border border-emerald-400/30 p-1 hover:bg-emerald-500/10"
+            onClick={() => setShowProblemList(false)}
+          >
+            <X size={14} />
+          </button>
+        </div>
+        <div className="space-y-2 max-h-[calc(100vh-140px)] overflow-y-auto">
+            {problems.map((problem, index) => (
+              <button
+                key={problem.id}
+                className={`w-full rounded-lg border p-3 text-left ${
+                  index === selectedProblemIndex
+                    ? "border-emerald-400/40 bg-emerald-500/10"
+                    : "border-emerald-500/15 bg-[#0b2f27] hover:bg-emerald-500/5"
+                }`}
+                onClick={() => setActiveProblem(index)}
+              >
+                <p className="font-semibold">{problem.id}. {problem.title}</p>
+                <div className="mt-1 flex items-center justify-between text-xs">
+                  <span className="text-emerald-300">{problem.difficulty}</span>
+                  <span className={problem.solved ? "text-emerald-300" : "text-emerald-100/60"}>
+                    {problem.solved ? "Solved" : "Unsolved"}
+                  </span>
+                </div>
+              </button>
+            ))}
+        </div>
+      </aside>
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <article className="rounded-xl border border-emerald-500/25 bg-[#062f27] p-5">
           <div className="mb-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold">{challenge.title}</h1>
             <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs text-emerald-300">
               {challenge.difficulty}
             </span>
+          </div>
+
+          <div className="mb-4 flex gap-2">
+            <button
+              className="rounded-lg border border-emerald-400/35 px-3 py-1.5 text-sm hover:bg-emerald-500/10 disabled:opacity-40"
+              disabled={selectedProblemIndex === 0}
+              onClick={() => setActiveProblem(selectedProblemIndex - 1)}
+            >
+              Previous
+            </button>
+            <button
+              className="rounded-lg border border-emerald-400/35 px-3 py-1.5 text-sm hover:bg-emerald-500/10 disabled:opacity-40"
+              disabled={selectedProblemIndex === problems.length - 1}
+              onClick={() => setActiveProblem(selectedProblemIndex + 1)}
+            >
+              Next
+            </button>
           </div>
 
           <p className="mb-4 text-sm text-emerald-100">{challenge.description}</p>
@@ -162,10 +286,10 @@ export default function Challenges() {
 
           <h2 className="mb-2 text-lg font-semibold">Visible Test Cases</h2>
           <div className="space-y-2">
-            {visibleTests.map((test) => (
+            {challenge.visibleTests.map((test) => (
               <div key={test.id} className="rounded-lg border border-emerald-500/20 bg-[#0b2f27] p-3 text-sm">
-                <p>Input: {formatInput(test.nums, test.target)}</p>
-                <p>Output: {formatOutput(test.output)}</p>
+                <p>Input: {normalize(test.args)}</p>
+                <p>Output: {normalize(test.output)}</p>
               </div>
             ))}
           </div>
@@ -174,7 +298,7 @@ export default function Challenges() {
           <div className="rounded-lg border border-emerald-500/20 bg-[#0b2f27] p-3 text-sm text-emerald-100/80">
             <p className="flex items-center gap-2">
               <Lock size={16} className="text-amber-300" />
-              {hiddenTests.length} hidden test cases are used during submit.
+              {challenge.hiddenTests.length} hidden test cases are used during submit.
             </p>
           </div>
         </article>

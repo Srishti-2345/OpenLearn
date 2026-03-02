@@ -58,6 +58,24 @@ export default function UserProgressDashboard({ enrolledCourses = [], onOpenCour
   const visibleCourses = showAllCourses ? normalizedCourses : normalizedCourses.slice(0, 3);
   const visibleLeaderboard = showFullLeaderboard ? leaderboard : leaderboard.slice(0, 2);
   const canExpandCourses = normalizedCourses.length > 3;
+  const monthlySolved = Array.from({ length: 30 }, (_, index) => {
+    const base = Math.floor((Math.sin(index / 4) + 1.2) * 2);
+    const streakBoost = index % 7 === 0 ? 2 : 0;
+    return base + streakBoost + Math.min(inProgressCourses.length, 3);
+  });
+  const maxSolvedInDay = Math.max(...monthlySolved, 1);
+  const heatmapWeeks = 12;
+  const heatmapDays = 7;
+  const heatmapValues = Array.from({ length: heatmapWeeks }, (_, week) =>
+    Array.from({ length: heatmapDays }, (_, day) => (week * 3 + day + completedCourses.length) % 5)
+  );
+  const heatmapColors = [
+    "bg-[#123728]",
+    "bg-[#1a5a3f]",
+    "bg-[#1f7d56]",
+    "bg-[#24aa72]",
+    "bg-[#2ceb9a]",
+  ];
 
   return (
     <section className="min-h-[calc(100vh-64px)] w-full bg-[#031f1a] px-4 py-5 text-white md:px-8 md:py-8">
@@ -75,7 +93,45 @@ export default function UserProgressDashboard({ enrolledCourses = [], onOpenCour
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl border border-[#2ced9c]/20 bg-[#0a3d2f] p-4">
+        <div className="mt-4 rounded-xl border border-[#2ced9c]/20 bg-[#0b2f27] p-4">
+          <h4 className="text-xl font-bold">Problems Solved (Last 30 Days)</h4>
+          <div className="mt-4 flex h-40 items-end gap-1 rounded-lg border border-[#2ced9c]/10 bg-[#06271f] p-3">
+            {monthlySolved.map((count, index) => (
+              <div key={`day-${index}`} className="flex flex-1 flex-col items-center justify-end">
+                <div
+                  className="w-full rounded-t bg-[#2ceb9a]"
+                  style={{ height: `${Math.max(6, (count / maxSolvedInDay) * 100)}%` }}
+                  title={`Day ${index + 1}: ${count} solved`}
+                />
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-[#aee7cc]">
+            Total solved this month: <span className="font-semibold text-[#53f7a8]">{monthlySolved.reduce((a, b) => a + b, 0)}</span>
+          </p>
+        </div>
+
+        <div className="mt-5 rounded-xl border border-[#2ced9c]/20 bg-[#0b2f27] p-4">
+          <h4 className="text-xl font-bold">Submission Heatmap</h4>
+          <p className="mt-1 text-xs text-[#aee7cc]">LeetCode-style contribution intensity by day.</p>
+          <div className="mt-4 overflow-x-auto">
+            <div className="inline-grid grid-flow-col gap-1">
+              {heatmapValues.map((week, weekIndex) => (
+                <div key={`week-${weekIndex}`} className="grid grid-rows-7 gap-1">
+                  {week.map((value, dayIndex) => (
+                    <div
+                      key={`cell-${weekIndex}-${dayIndex}`}
+                      className={`h-3 w-3 rounded-sm ${heatmapColors[value]}`}
+                      title={`Week ${weekIndex + 1}, Day ${dayIndex + 1}: ${value} submissions`}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-xl border border-[#2ced9c]/20 bg-[#0a3d2f] p-4">
           <p className="text-[10px] uppercase tracking-[0.2em] text-[#5cf0ab]">Resume Learning</p>
           <h2 className="mt-1 text-2xl font-bold">{resumeCourse.title}</h2>
           <p className="text-sm text-[#a6e5ca]">{resumeCourse.instructor || "Module 4: Dynamic Layouts"}</p>
