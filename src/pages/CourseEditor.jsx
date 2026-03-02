@@ -13,7 +13,7 @@ export default function CourseEditor({ course, setCourse, goBack }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#031f1a] via-[#062f27] to-[#041a16] text-white px-6 py-6">
 
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
@@ -44,7 +44,7 @@ export default function CourseEditor({ course, setCourse, goBack }) {
             onClick={() => setTab(t.id)}
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300
               ${tab === t.id
-                ? "bg-gradient-to-r from-blue-400 to-pink-500 text-black shadow-lg scale-105"
+                ? "bg-gradient-to-r from-green-400 to-emerald-500 text-black shadow-lg scale-105"
                 : "bg-white/10 hover:bg-white/20 text-gray-300"}
             `}
           >

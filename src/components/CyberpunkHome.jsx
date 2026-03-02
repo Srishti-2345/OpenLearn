@@ -5,7 +5,7 @@ function CyberpunkHome() {
     <section className="min-h-screen h-screen overflow-hidden bg-[var(--color-cyberDark)] text-white px-6 py-16 relative flex items-center justify-center">
 
       {/* 🔲 grid background */}
-      <div className="absolute inset-0 bg-[linear-gradient(#00f0ff11_1px,transparent_1px),linear-gradient(90deg,#00f0ff11_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(#25e78f22_1px,transparent_1px),linear-gradient(90deg,#25e78f22_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
 
       {/* scanline overlay */}
       <div className="absolute inset-0 bg-[repeating-linear-gradient(transparent,transparent_2px,rgba(255,255,255,0.03)_3px)] pointer-events-none"></div>
@@ -25,11 +25,11 @@ function CyberpunkHome() {
 
         {/* Buttons */}
         <div className="flex gap-6 justify-center flex-wrap">
-          <button className="px-6 py-3 border border-[var(--color-neonBlue)] text-[var(--color-neonBlue)] hover:bg-[var(--color-neonBlue)] hover:text-black transition duration-300 shadow-[0_0_10px_#00f0ff] hover:shadow-[0_0_25px_#00f0ff]">
+          <button className="px-6 py-3 border border-[var(--color-neonBlue)] text-[var(--color-neonBlue)] hover:bg-[var(--color-neonBlue)] hover:text-black transition duration-300 shadow-[0_0_10px_#25e78f] hover:shadow-[0_0_25px_#25e78f]">
             Explore Courses
           </button>
 
-          <button className="px-6 py-3 border border-[var(--color-neonPink)] text-[var(--color-neonPink)] hover:bg-[var(--color-neonPink)] hover:text-black transition duration-300 shadow-[0_0_10px_#ff00ff] hover:shadow-[0_0_25px_#ff00ff]">
+          <button className="px-6 py-3 border border-[#2ced9c] text-[#2ced9c] hover:bg-[#2ced9c] hover:text-black transition duration-300 shadow-[0_0_10px_#2ced9c] hover:shadow-[0_0_25px_#2ced9c]">
             Start Learning
           </button>
         </div>

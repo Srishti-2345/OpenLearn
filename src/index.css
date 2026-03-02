@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-neonPink: #ff00ff;
-  --color-neonBlue: #00f0ff;
-  --color-cyberDark: #07070a;
+  --color-neonPink: #25e78f;
+  --color-neonBlue: #51f6a9;
+  --color-cyberDark: #031f1a;
 }
 
 
@@ -26,8 +26,8 @@ body::-webkit-scrollbar {
   text-shadow:
     0 0 5px var(--color-neonBlue),
     0 0 10px var(--color-neonBlue),
-    0 0 20px var(--color-neonPink),
-    0 0 40px var(--color-neonPink);
+    0 0 20px #2ced9c,
+    0 0 40px #2ced9c;
 }
 
 
@@ -49,14 +49,14 @@ body::-webkit-scrollbar {
 }
 
 .glitch::before {
-  color: var(--color-neonPink);
+  color: #2ced9c;
   opacity: 0.8;
   animation: glitchTop 1s infinite linear alternate-reverse;
 }
 
 
 .glitch::after {
-  color: var(--color-neonBlue);
+  color: #7df5be;
   opacity: 0.8;
   animation: glitchBottom 1.2s infinite linear alternate-reverse;
 }

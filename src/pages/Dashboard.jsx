@@ -1,8 +1,5 @@
 import React from "react";
 import CourseSection from "../components/CourseSection";
-import CyberpunkCourseDetails from "../components/CyberpunkCourses";
-
-
 export default function Dashboard({ courses, openCourse, createNew, editCourse }) {
 
   // 🎯 Convert saved course → UI card format
@@ -19,7 +16,7 @@ export default function Dashboard({ courses, openCourse, createNew, editCourse }
       rating: 4.5,
       weeks: `${course.sections.length} Weeks`,
       instructor: "You",
-      gradient: "gradient-to-r from-purple-500 to-pink-500"
+      gradient: "gradient-to-r from-emerald-400 to-green-500"
     };
   });
 

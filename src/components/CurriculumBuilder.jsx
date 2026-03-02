@@ -71,7 +71,7 @@ export default function CurriculumBuilder({ course, setCourse }) {
           >
             {/* Section Title */}
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-semibold text-blue-400">
+              <h3 className="text-lg font-semibold text-emerald-400">
                 {sec.title}
               </h3>
 
@@ -111,7 +111,7 @@ export default function CurriculumBuilder({ course, setCourse }) {
 
       {/* Add Section */}
       <div className="bg-black/40 border border-white/10 p-5 rounded-xl backdrop-blur shadow">
-        <h3 className="text-lg font-semibold mb-3 text-pink-400">
+        <h3 className="text-lg font-semibold mb-3 text-emerald-400">
           Add New Section
         </h3>
 
@@ -120,12 +120,12 @@ export default function CurriculumBuilder({ course, setCourse }) {
             value={sectionTitle}
             onChange={(e) => setSectionTitle(e.target.value)}
             placeholder="Enter section title..."
-            className="flex-1 p-3 rounded-lg bg-black/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="flex-1 p-3 rounded-lg bg-black/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-emerald-400"
           />
 
           <button
             onClick={addSection}
-            className="bg-gradient-to-r from-blue-400 to-pink-500 text-black px-5 rounded-lg font-semibold hover:scale-105 transition"
+            className="bg-gradient-to-r from-green-400 to-emerald-500 text-black px-5 rounded-lg font-semibold hover:scale-105 transition"
           >
             + Add
           </button>

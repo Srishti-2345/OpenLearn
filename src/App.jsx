@@ -1,94 +1,142 @@
 import { useState } from 'react'
 
-import Frontpage from "./components/frontpage";
-
-function App() {
-  return <Frontpage />;
-}
-
-export default App;
-// import './App.css'
-// import Navbar from './components/Navbar'
-// import CyberpunkCourses from './components/CyberpunkCourses' 
-// import CyberpunkHome from './components/CyberpunkHome' 
-// import CyberpunkCourseDetails from './components/CyberpunkCourseDetails'
-// import Dashboard from './pages/Dashboard'
-// import CourseEditor from './pages/CourseEditor'
-
+// import Frontpage from "./components/frontpage";
 
 // function App() {
-//   const [selectedCourse, setSelectedCourse] = useState(null)
-//   const [detailsOpen, setDetailsOpen] = useState(false)
-//   const [view, setView] = useState('home') // 'home' | 'dashboard' | 'editor'
-//   const [courses, setCourses] = useState([])
-//   const [editorCourse, setEditorCourse] = useState(null)
-
-//   return (
-//     <>
-//       <Navbar
-//         onCoursesClick={() => { setDetailsOpen(false); setView('courses'); }}
-//         onContributeClick={() => setView('dashboard')}
-//       />
-//       <main className="pt-16">
-//         {view === 'editor' ? (
-//           <CourseEditor
-//             course={editorCourse}
-//             setCourse={(updated) => {
-//               setEditorCourse(updated);
-//               setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-//             }}
-//             goBack={() => setView('dashboard')}
-//           />
-//         ) : view === 'dashboard' ? (
-//           <Dashboard
-//             courses={courses}
-//             openCourse={(c) => { setSelectedCourse(c); setDetailsOpen(true); setView('home'); }}
-//             createNew={() => {
-//               const newCourse = {
-//                 id: Date.now(),
-//                 title: 'Untitled Course',
-//                 category: '',
-//                 level: 'Beginner',
-//                 price: '',
-//                 isPublic: true,
-//                 thumbnail: null,
-//                 instructor: 'You',
-//                 editable: true,
-//                 sections: [{ id: Date.now() + 1, title: 'New Section', lessons: [] }]
-//               };
-
-//               setCourses((prev) => [...prev, newCourse]);
-//               setEditorCourse(newCourse);
-//               setView('editor');
-//             }}
-//             editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
-//           />
-//         ) : view === 'courses' ? (
-//           <>
-//             <div className="overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-hide">
-//               <CyberpunkCourses onSelectCourse={(c) => { setSelectedCourse(c); setDetailsOpen(true); }} />
-//             </div>
-
-//             {detailsOpen && (
-//               <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setDetailsOpen(false)} />
-//             )}
-
-//             <CyberpunkCourseDetails
-//               open={detailsOpen}
-//               course={selectedCourse}
-//               onClose={() => setDetailsOpen(false)}
-//               editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
-//             />
-//           </>
-//         ) : (
-//           <CyberpunkHome />
-//         )}
-//       </main>
-//     </>
-//   )
+//   return <Frontpage />;
 // }
 
-// export default App
+// export default App;
+import './App.css'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import CyberpunkCourses from './components/CyberpunkCourses' 
+import CyberpunkHome from './components/CyberpunkHome' 
+import CyberpunkCourseDetails from './components/CyberpunkCourseDetails'
+import CourseCommunity from './components/CourseCommunity'
+import Dashboard from './pages/Dashboard'
+import UserProgressDashboard from './pages/UserProgressDashboard'
+import CourseEditor from './pages/CourseEditor'
+import Challenges from './pages/Challenges'
+import AuthPage from './pages/AuthPage'
+
+
+function App() {
+  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [view, setView] = useState('home') // 'home' | 'dashboard' | 'user-dashboard' | 'editor' | 'challenges' | 'collaborate' | 'auth'
+  const [courses, setCourses] = useState([])
+  const [editorCourse, setEditorCourse] = useState(null)
+  const [enrolledCourses, setEnrolledCourses] = useState([])
+  const [communityCourse, setCommunityCourse] = useState(null)
+
+  const enrollCourse = (course) => {
+    if (!course?.title) return;
+
+    setEnrolledCourses((prev) => {
+      const alreadyEnrolled = prev.some((c) => c.title === course.title);
+      return alreadyEnrolled ? prev : [...prev, course];
+    });
+  };
+
+  const openCommunity = (course) => {
+    if (!course) return;
+    enrollCourse(course);
+    setCommunityCourse(course);
+    setDetailsOpen(false);
+    setView('collaborate');
+  };
+
+  return (
+    <>
+      <Navbar
+        onLogoClick={() => { setDetailsOpen(false); setView('home'); }}
+        onLoginClick={() => { setDetailsOpen(false); setView('auth'); }}
+        onCoursesClick={() => { setDetailsOpen(false); setView('courses'); }}
+        onChallengesClick={() => { setDetailsOpen(false); setView('challenges'); }}
+        onDashboardClick={() => { setDetailsOpen(false); setView('user-dashboard'); }}
+        onContributeClick={() => setView('dashboard')}
+        enrolledCourses={enrolledCourses}
+        onCollaborateCourseClick={openCommunity}
+      />
+      <main className="pt-16">
+        {view === 'editor' ? (
+          <CourseEditor
+            course={editorCourse}
+            setCourse={(updated) => {
+              setEditorCourse(updated);
+              setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+            }}
+            goBack={() => setView('dashboard')}
+          />
+        ) : view === 'dashboard' ? (
+          <Dashboard
+            courses={courses}
+            openCourse={(c) => { setSelectedCourse(c); setDetailsOpen(true); setView('home'); }}
+            createNew={() => {
+              const newCourse = {
+                id: Date.now(),
+                title: 'Untitled Course',
+                category: '',
+                level: 'Beginner',
+                price: '',
+                isPublic: true,
+                thumbnail: null,
+                instructor: 'You',
+                editable: true,
+                sections: [{ id: Date.now() + 1, title: 'New Section', lessons: [] }]
+              };
+
+              setCourses((prev) => [...prev, newCourse]);
+              setEditorCourse(newCourse);
+              setView('editor');
+            }}
+            editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
+          />
+        ) : view === 'user-dashboard' ? (
+          <UserProgressDashboard
+            enrolledCourses={enrolledCourses}
+            onOpenCourses={() => setView('courses')}
+          />
+        ) : view === 'auth' ? (
+          <AuthPage />
+        ) : view === 'challenges' ? (
+          <Challenges />
+        ) : view === 'collaborate' ? (
+          <CourseCommunity
+            enrolledCourses={enrolledCourses}
+            activeCourse={communityCourse}
+            onSelectCourse={setCommunityCourse}
+          />
+        ) : view === 'courses' ? (
+          <>
+            <div className="overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-hide">
+              <CyberpunkCourses onSelectCourse={(c) => { setSelectedCourse(c); setDetailsOpen(true); }} />
+            </div>
+
+            {detailsOpen && (
+              <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setDetailsOpen(false)} />
+            )}
+
+            <CyberpunkCourseDetails
+              open={detailsOpen}
+              course={selectedCourse}
+              onClose={() => setDetailsOpen(false)}
+              onEnroll={enrollCourse}
+              onOpenCommunity={openCommunity}
+              editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
+            />
+          </>
+        ) : (
+          <CyberpunkHome />
+        )}
+      </main>
+      <Footer />
+    </>
+  )
+}
+
+export default App
 
 
 

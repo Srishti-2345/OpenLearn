@@ -80,15 +80,15 @@ const Sidebar = () => {
         <input
           type="text"
           placeholder="Search courses..."
-          className="w-full py-2 pl-10 pr-4 bg-[#1a1a1a] rounded-lg text-white placeholder-[#666] focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-transparent"
+          className="w-full py-2 pl-10 pr-4 bg-[#1a1a1a] rounded-lg text-white placeholder-[#666] focus:outline-none focus:ring-2 focus:ring-[#25e78f] focus:border-transparent"
         />
-        <FiSearch className="absolute left-3 top-2.5 text-[#00ffff]" size={20} />
+        <FiSearch className="absolute left-3 top-2.5 text-[#25e78f]" size={20} />
       </div>
 
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold tracking-wide">Filters</h2>
-        <button className="text-[#00ffff] font-semibold text-sm">CLEAR ALL</button>
+        <button className="text-[#25e78f] font-semibold text-sm">CLEAR ALL</button>
       </div>
 
       {/* Difficulty Level */}
@@ -102,7 +102,7 @@ const Sidebar = () => {
             <button
               onClick={() => toggleDifficulty(level)}
               className={`w-10 h-5 rounded-full p-0.5 ${
-                difficulty[level] ? "bg-[#00ffff]" : "bg-[#333]"
+                difficulty[level] ? "bg-[#25e78f]" : "bg-[#333]"
               }`}
             >
               <div
@@ -129,9 +129,9 @@ const Sidebar = () => {
           max="250"
           value={priceRange[1]}
           onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-          className="w-full accent-[#00ffff]"
+          className="w-full accent-[#25e78f]"
         />
-        <p className="text-right text-sm mt-1 text-[#00ffff]">
+        <p className="text-right text-sm mt-1 text-[#25e78f]">
           ${priceRange[0]} - ${priceRange[1]}+
         </p>
       </div>
@@ -144,7 +144,7 @@ const Sidebar = () => {
             <button
               key={d}
               className={`py-2 rounded-lg text-sm font-semibold border ${
-                duration === d ? "border-[#00ffff] text-[#00ffff]" : "border-[#333] text-[#aaa]"
+                duration === d ? "border-[#25e78f] text-[#25e78f]" : "border-[#333] text-[#aaa]"
               }`}
               onClick={() => setDuration(d)}
             >
@@ -160,7 +160,7 @@ const Sidebar = () => {
         <div className="flex flex-col gap-2">
           <button
             className={`flex items-center gap-2 text-sm font-semibold ${
-              rating === 4 ? "text-[#00ffff]" : "text-[#aaa]"
+              rating === 4 ? "text-[#25e78f]" : "text-[#aaa]"
             }`}
             onClick={() => setRating(4)}
           >
@@ -168,7 +168,7 @@ const Sidebar = () => {
           </button>
           <button
             className={`flex items-center gap-2 text-sm font-semibold ${
-              rating === 3 ? "text-[#00ffff]" : "text-[#aaa]"
+              rating === 3 ? "text-[#25e78f]" : "text-[#aaa]"
             }`}
             onClick={() => setRating(3)}
           >
@@ -178,7 +178,7 @@ const Sidebar = () => {
       </div>
 
       {/* Apply Button */}
-      <button className="w-full py-3 bg-[#00ffff] text-black font-bold rounded-lg hover:bg-[#00dddd] transition-all">
+      <button className="w-full py-3 bg-[#25e78f] text-black font-bold rounded-lg hover:bg-[#1fd67f] transition-all">
         Apply Filters
       </button>
     </div>
