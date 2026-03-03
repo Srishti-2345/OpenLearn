@@ -18,17 +18,21 @@ import Dashboard from './pages/Dashboard'
 import UserProgressDashboard from './pages/UserProgressDashboard'
 import CourseEditor from './pages/CourseEditor'
 import Challenges from './pages/Challenges'
+import ChallengeUploader from './pages/ChallengeUploader'
 import AuthPage from './pages/AuthPage'
+import CourseContent from './pages/CourseContent'
 
 
 function App() {
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
-  const [view, setView] = useState('home') // 'home' | 'dashboard' | 'user-dashboard' | 'editor' | 'challenges' | 'collaborate' | 'auth'
+  const [view, setView] = useState('home') // 'home' | 'dashboard' | 'challenge-upload' | 'user-dashboard' | 'editor' | 'challenges' | 'collaborate' | 'course-content' | 'auth'
   const [courses, setCourses] = useState([])
   const [editorCourse, setEditorCourse] = useState(null)
   const [enrolledCourses, setEnrolledCourses] = useState([])
   const [communityCourse, setCommunityCourse] = useState(null)
+  const [customChallenges, setCustomChallenges] = useState([])
+  const [activeCourseContent, setActiveCourseContent] = useState(null)
 
   const enrollCourse = (course) => {
     if (!course?.title) return;
@@ -45,6 +49,14 @@ function App() {
     setCommunityCourse(course);
     setDetailsOpen(false);
     setView('collaborate');
+  };
+
+  const openCourseContent = (course) => {
+    if (!course?.title) return;
+    enrollCourse(course);
+    setActiveCourseContent(course);
+    setDetailsOpen(false);
+    setView('course-content');
   };
 
   return (
@@ -72,6 +84,7 @@ function App() {
         ) : view === 'dashboard' ? (
           <Dashboard
             courses={courses}
+            customChallenges={customChallenges}
             openCourse={(c) => { setSelectedCourse(c); setDetailsOpen(true); setView('home'); }}
             createNew={() => {
               const newCourse = {
@@ -92,6 +105,15 @@ function App() {
               setView('editor');
             }}
             editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
+            createNewChallenge={() => setView('challenge-upload')}
+          />
+        ) : view === 'challenge-upload' ? (
+          <ChallengeUploader
+            onSave={(challenge) => {
+              setCustomChallenges((prev) => [challenge, ...prev]);
+              setView('dashboard');
+            }}
+            onCancel={() => setView('dashboard')}
           />
         ) : view === 'user-dashboard' ? (
           <UserProgressDashboard
@@ -100,8 +122,13 @@ function App() {
           />
         ) : view === 'auth' ? (
           <AuthPage />
+        ) : view === 'course-content' ? (
+          <CourseContent
+            course={activeCourseContent}
+            onBack={() => setView('courses')}
+          />
         ) : view === 'challenges' ? (
-          <Challenges />
+          <Challenges customChallenges={customChallenges} />
         ) : view === 'collaborate' ? (
           <CourseCommunity
             enrolledCourses={enrolledCourses}
@@ -122,7 +149,7 @@ function App() {
               open={detailsOpen}
               course={selectedCourse}
               onClose={() => setDetailsOpen(false)}
-              onEnroll={enrollCourse}
+              onEnroll={openCourseContent}
               onOpenCommunity={openCommunity}
               editCourse={(c) => { setEditorCourse(c); setView('editor'); }}
             />

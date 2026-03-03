@@ -40,7 +40,7 @@ const instructors = [
   "Jeff Barr",
 ];
 
-const allCourses = Array.from({ length: 50 }, (_, i) => ({
+const generatedCourses = Array.from({ length: 50 }, (_, i) => ({
   title: `${titles[i % titles.length]} ${i + 1}`,
   level: levels[i % levels.length],
   progress: Math.floor(Math.random() * 100),
@@ -50,6 +50,19 @@ const allCourses = Array.from({ length: 50 }, (_, i) => ({
   instructor: instructors[i % instructors.length],
   gradient: gradients[i % gradients.length],
 }));
+
+const dummyCourseConnect = {
+  title: "Course Connect (Dummy)",
+  level: "Beginner",
+  progress: 0,
+  students: "0",
+  rating: "5.0",
+  weeks: "4 weeks",
+  instructor: "Demo Instructor",
+  gradient: "white",
+};
+
+const allCourses = [dummyCourseConnect, ...generatedCourses];
 
 /* ---------- SECTIONS ---------- */
 const trending = allCourses.slice(0, 10);

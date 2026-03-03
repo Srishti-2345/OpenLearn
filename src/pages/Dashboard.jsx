@@ -1,6 +1,13 @@
 import React from "react";
 import CourseSection from "../components/CourseSection";
-export default function Dashboard({ courses, openCourse, createNew, editCourse }) {
+export default function Dashboard({
+  courses,
+  customChallenges = [],
+  openCourse,
+  createNew,
+  editCourse,
+  createNewChallenge,
+}) {
 
   // 🎯 Convert saved course → UI card format
   const formattedCourses = courses.map((course) => {
@@ -28,12 +35,42 @@ export default function Dashboard({ courses, openCourse, createNew, editCourse }
         + Create New Course
       </button>
 
+      <button className="primary mb-8 ml-3" onClick={createNewChallenge}>
+        + Upload Challenge
+      </button>
+
       <CourseSection
         title="Your Published Courses"
         data={formattedCourses}
         onSelectCourse={openCourse}
         onEditCourse={editCourse}
       />
+
+      <div className="mb-8">
+        <h2 className="mb-6 text-center text-3xl font-bold">Your Uploaded Challenges</h2>
+        {customChallenges.length === 0 ? (
+          <p className="rounded-xl border border-emerald-500/25 bg-black/20 p-5 text-center text-emerald-100/80">
+            You have not uploaded any challenges yet.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {customChallenges.map((challenge) => (
+              <div
+                key={challenge.id}
+                className="rounded-xl border border-emerald-500/25 bg-black/30 p-4"
+              >
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-semibold">{challenge.title}</h3>
+                  <span className="rounded-full border border-emerald-400/40 px-2 py-1 text-xs text-emerald-200">
+                    {challenge.difficulty}
+                  </span>
+                </div>
+                <p className="text-sm text-emerald-100/90">{challenge.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

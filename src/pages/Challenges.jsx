@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { Lock, PanelLeft, Play, Rocket, X } from "lucide-react";
 
-const problems = [
+const defaultProblems = [
   {
     id: 1,
     title: "Two Sum",
@@ -115,13 +115,20 @@ function buildRunner(code, functionName) {
   return factory();
 }
 
-export default function Challenges() {
+export default function Challenges({ customChallenges = [] }) {
+  const problems = useMemo(
+    () => [...customChallenges, ...defaultProblems],
+    [customChallenges]
+  );
   const [selectedProblemIndex, setSelectedProblemIndex] = useState(0);
-  const [code, setCode] = useState(problems[0].starterCode);
+  const [code, setCode] = useState(problems[0]?.starterCode || "");
   const [result, setResult] = useState(null);
   const [showProblemList, setShowProblemList] = useState(false);
 
-  const challenge = useMemo(() => problems[selectedProblemIndex], [selectedProblemIndex]);
+  const challenge = useMemo(
+    () => problems[selectedProblemIndex],
+    [problems, selectedProblemIndex]
+  );
 
   const setActiveProblem = (index) => {
     setSelectedProblemIndex(index);
@@ -130,6 +137,7 @@ export default function Challenges() {
   };
 
   const runCode = () => {
+    if (!challenge) return;
     try {
       const solver = buildRunner(code, challenge.functionName);
       const test = challenge.visibleTests[0];
@@ -153,6 +161,7 @@ export default function Challenges() {
   };
 
   const submitCode = () => {
+    if (!challenge) return;
     try {
       const solver = buildRunner(code, challenge.functionName);
 
@@ -197,6 +206,16 @@ export default function Challenges() {
       });
     }
   };
+
+  if (!challenge) {
+    return (
+      <section className="min-h-[calc(100vh-64px)] bg-[#031f1a] p-6 text-white">
+        <div className="rounded-xl border border-emerald-500/25 bg-[#062f27] p-5">
+          <h1 className="text-2xl font-bold">No challenges available</h1>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-[calc(100vh-64px)] bg-[#031f1a] text-white p-4 md:p-6">
